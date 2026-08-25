@@ -377,151 +377,224 @@ OS-level delivery.
 
 
 
-
-  # RemindMe
+# 🔔 RemindMe
 
 <p align="center">
-  <img src="assets/remindme-logo.png" alt="RemindMe Logo" width="180"/>
+  <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjN4o4jILJvRP9IlAXSSOTSAYN_7cF53TrkUXOgN_RF_pjmGyDAImtHRIuWiMxMQmww5VI0phn3Lyj95bSryhohWexUgbRF90moAg1d-Jyq0EIneBiUGd02SuJ2oGbwcJe61mWdmXWXOKR-1AtEzmog9ylLGCmMAMm1XwhtQU9iXJjj8lCt8vWZ0e0caMOgan6MD1XHa9HoSAOLf-KolX3Ug9cM5MERcwB1SB0vr8cbhIZVYRirP4EWwepYHejtrS1Ask" alt="RemindMe Logo" width="180"/>
 </p>
 
 <h3 align="center">Remember Everything. Never Miss What Matters.</h3>
 
 <p align="center">
-  A beautiful, privacy-first, offline notes & reminders app for iPhone — built with Flutter.
+  A professional, offline-first notes & reminders app for <strong>Android & iOS</strong>, built with Flutter.
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Flutter-3.x-7C5CFC?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter"/>
-  <img src="https://img.shields.io/badge/iOS-26%2B-111827?style=for-the-badge&logo=apple&logoColor=white" alt="iOS"/>
-  <img src="https://img.shields.io/badge/Offline-First-8B5CF6?style=for-the-badge" alt="Offline First"/>
-  <img src="https://img.shields.io/badge/Privacy-Local%20Storage-EC4899?style=for-the-badge" alt="Privacy"/>
+  <img src="https://img.shields.io/badge/Flutter-3.x-7C3AED?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter"/>
+  <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android"/>
+  <img src="https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=apple&logoColor=white" alt="iOS"/>
+  <img src="https://img.shields.io/badge/Offline--First-8B5CF6?style=for-the-badge" alt="Offline First"/>
+  <img src="https://img.shields.io/badge/Privacy--First-EC4899?style=for-the-badge" alt="Privacy First"/>
 </p>
 
 ---
 
-## ✨ What is RemindMe?
+## ✨ About RemindMe
 
-**RemindMe** is an all-in-one personal memory app designed around one simple idea:
+**RemindMe** is a professional, privacy-first productivity application designed to help you capture, organize, and remember what matters.
+
+Create projects, write notes, attach images, record voice notes, and schedule reminders — all from one clean workspace. The core experience is designed to work **completely offline**, keeping your personal data stored locally on your device.
 
 > **Write it. Save it. Set it. Remember it.**
 
-Instead of using separate apps for notes, reminders, voice memos and quick ideas, RemindMe brings everything together in one calm, modern workspace.
+### 📱 Platform
 
-Create projects, write notes, attach images, record voice notes, schedule reminders and receive local notifications — even when you are completely offline.
+| Platform | Support |
+|---|---|
+| 🤖 Android | ✅ |
+| 🍎 iOS | ✅ |
+| 🌐 Offline Core Experience | ✅ |
+| ☁️ Cloud Dependency | ❌ |
 
 ---
 
-## 🎯 Core Experience
+# 🎯 Core Experience
 
 ```text
-                    REMINDME
-                       │
-          ┌────────────┼────────────┐
-          │            │            │
-        NOTES       REMINDERS      VOICE
-          │            │            │
-          └────────────┼────────────┘
-                       │
-                    PROJECTS
-                       │
-                 LOCAL STORAGE
-                       │
-                LOCAL NOTIFICATIONS
+                         🔔 REMINDME
+                              │
+             ┌────────────────┼────────────────┐
+             │                │                │
+           📝 NOTES       ⏰ REMINDERS      🎙️ VOICE
+             │                │                │
+             └────────────────┼────────────────┘
+                              │
+                          📁 PROJECTS
+                              │
+                     🔒 LOCAL STORAGE
+                              │
+                    🔔 LOCAL NOTIFICATIONS
+                              │
+                     🤖 ANDROID + 🍎 iOS
 ```
 
-### 📝 Notes
+---
+
+# 📝 Notes
+
+Create and organize different types of notes:
+
 - Text notes
-- Rich note content
+- Image notes
+- Voice notes
+- Mixed notes
 - Checklists
-- Pinned notes
-- Favorite notes
 - Tags
-- Search
+- Favorites
+- Pinned notes
 - Archive
 - Recently deleted
+- Offline search
 
-### 🔔 Reminders
-- Date & time reminders
+Each note can be connected to a project and optionally converted into a reminder.
+
+---
+
+# 🔔 Smart Reminders
+
+Never miss an important task.
+
+RemindMe supports:
+
 - One-time reminders
 - Daily reminders
 - Weekly reminders
 - Monthly reminders
 - Custom recurring reminders
+- Date & time scheduling
+- Priority levels
 - Snooze
 - Complete
 - Reschedule
 - Local notification actions
+- Reminder-to-note linking
 
-### 🖼️ Images
-- Camera capture
-- Gallery selection
-- Multiple images
-- Local image storage
-- Full-screen image preview
-
-### 🎙️ Voice Notes
-- Record voice notes
-- Pause / resume
-- Playback
-- Rename
-- Delete
-- Attach recordings to notes
-- Fully local audio storage
-
-### 📁 Projects
-Organize everything into separate spaces:
+### Reminder Flow
 
 ```text
-Personal
-Work
-CPApp
-School
-Ideas
-Shopping
-Travel
+Create Reminder
+      ↓
+Select Date & Time
+      ↓
+Choose Repeat
+      ↓
+Save Locally
+      ↓
+Schedule Local Notification
+      ↓
+        ⏰
+Reminder Fires
+      ↓
+┌──────────┬──────────┬──────────┐
+│   Open   │  Snooze  │ Complete │
+└──────────┴──────────┴──────────┘
 ```
 
-Each project can contain its own notes, reminders, images and voice recordings.
+Reminders use the device's **local notification system**, so core reminders do not require a cloud server.
 
 ---
 
-# 🎨 Design System
+# 🖼️ Image Notes
 
-RemindMe follows a premium **iOS-inspired Glass UI** with soft gradients, translucent surfaces, blur, rounded cards and subtle motion.
+Capture ideas visually.
 
-## Brand Colors
+- Camera
+- Gallery
+- Multiple images
+- Local image storage
+- Full-screen preview
+- Attachment management
 
-| Purpose | Color | Hex |
-|---|---|---|
-| Primary Purple | 🟣 | `#7C3AED` |
-| Electric Violet | 🟣 | `#8B5CF6` |
-| Pink Accent | 🩷 | `#EC4899` |
-| Reminder Orange | 🟠 | `#F59E0B` |
-| Voice Blue | 🔵 | `#3B82F6` |
-| Success Green | 🟢 | `#10B981` |
-| Dark Text | ⚫ | `#111827` |
-| Secondary Text | | `#667085` |
-| Glass White | | `#FFFFFF` |
+Large image files are stored locally while lightweight metadata is kept in the database.
+
+---
+
+# 🎙️ Voice Notes
+
+Capture thoughts without typing.
+
+- Start recording
+- Pause
+- Resume
+- Stop
+- Playback
+- Rename
+- Delete
+- Attach to notes
+- Local audio storage
+
+Voice recordings remain on the device unless the user explicitly exports a backup.
+
+---
+
+# 📁 Projects
+
+Keep everything organized.
+
+Create separate spaces such as:
+
+```text
+📁 Personal
+📁 Work
+📁 CPApp
+📁 School
+📁 Ideas
+📁 Shopping
+📁 Travel
+```
+
+Every project can contain:
+
+- Notes
+- Reminders
+- Images
+- Voice recordings
+- Tags
+- Completed items
+
+Projects support:
+
+- Create
+- Edit
+- Delete
+- Archive
+- Custom icon
+- Accent color
+- Statistics
+
+---
+
+# 🧊 Premium Glass UI
+
+RemindMe uses an original **iOS-inspired Glass UI** combined with a clean cross-platform experience for Android.
 
 ### Visual Language
 
 - Glassmorphism
-- Soft blur
-- Translucent cards
-- Large rounded corners
+- Translucent surfaces
+- Background blur
+- Soft gradients
+- Rounded cards
 - Subtle borders
 - Soft shadows
-- Gradient accents
-- iOS-style typography
-- Haptic feedback
+- Elegant typography
 - Smooth transitions
-- Dark & Light mode
+- Haptic feedback
+- Light mode
+- Dark mode
+- Accessible touch targets
 
----
-
-# 🧊 Glass UI
-
-A typical RemindMe card follows this visual hierarchy:
+Example:
 
 ```text
 ╭────────────────────────────────────╮
@@ -531,114 +604,103 @@ A typical RemindMe card follows this visual hierarchy:
 │   Call school client               │
 │   Today · 6:30 PM                  │
 │                                    │
-│                 Snooze   Complete  │
+│                  Snooze  Complete  │
 │                                    │
 ╰────────────────────────────────────╯
 ```
 
-The interface intentionally stays clean and content-focused instead of filling the screen with controls.
+The visual system is inspired by modern mobile design while maintaining a distinct **RemindMe** identity.
 
 ---
 
-# 📱 Main Screens
+# 🎨 RemindMe Design System
 
-## Home
+## Brand Palette
 
-The home screen gives a quick overview of the user's day:
+| Role | Hex |
+|---|---|
+| Primary Purple | `#7C3AED` |
+| Electric Violet | `#8B5CF6` |
+| Pink Accent | `#EC4899` |
+| Reminder Orange | `#F59E0B` |
+| Voice Blue | `#3B82F6` |
+| Success Green | `#10B981` |
+| Dark Text | `#111827` |
+| Secondary Text | `#667085` |
+| Glass White | `#FFFFFF` |
 
-- Greeting
-- Today's reminders
-- Upcoming reminders
-- Projects
-- Recent notes
-- Search
-- Quick create
+The palette is designed to work consistently across light and dark themes.
+
+---
+
+# 🏠 Main App Flow
+
+```text
+Splash
+  ↓
+Onboarding / First Launch
+  ↓
+Home
+  ├── Today's Reminders
+  ├── Recent Notes
+  ├── Projects
+  └── Quick Create
+        │
+        ├── 📝 Text Note
+        ├── 🖼️ Image Note
+        ├── 🎙️ Voice Note
+        └── 🔔 Reminder
+```
+
+### Project Flow
 
 ```text
 Home
- ├── Today's Reminders
- ├── Recent Notes
- ├── My Projects
- └── Quick Add
-```
-
-## Project Dashboard
-
-```text
+ ↓
 Project
+ ↓
+Project Dashboard
  ├── All
  ├── Notes
  ├── Reminders
  └── Completed
 ```
 
-## Quick Create
-
-A floating `+` button opens:
-
-```text
-╭────────────────────────╮
-│       Create New       │
-├────────────────────────┤
-│  📝  Text Note         │
-│  🖼️  Image Note        │
-│  🎙️  Voice Note        │
-│  🔔  Reminder          │
-╰────────────────────────╯
-```
-
 ---
 
-# 🔔 Reminder Flow
+# 🔒 Offline & Privacy First
 
-```text
-Create Reminder
-      ↓
-Select Date
-      ↓
-Select Time
-      ↓
-Choose Repeat
-      ↓
-Save to SQLite
-      ↓
-Schedule Local Notification
-      ↓
-      ⏰
-Reminder Fires
-      ↓
-┌─────────┬──────────┬──────────┐
-│  Open   │  Snooze  │ Complete │
-└─────────┴──────────┴──────────┘
-```
+RemindMe is designed around a **local-first architecture**.
 
-RemindMe does **not** depend on a cloud server for core reminders.
-
----
-
-# 🔒 Privacy First
-
-RemindMe is designed as an **offline-first** application.
-
-Core personal data stays on the device:
+Core data is stored on the device:
 
 ```text
 Notes          → SQLite
-Reminders      → SQLite
 Projects       → SQLite
+Reminders      → SQLite
+Tags           → SQLite
 Images         → Local Files
 Voice Notes    → Local Files
 Settings       → Local Storage
-Notifications  → iOS Local Notifications
+Notifications  → Local Notification System
 ```
 
-No account or internet connection is required for the core experience.
+### No core dependency on:
+
+- Firebase
+- REST API
+- Django backend
+- Cloud database
+- User account
+- Internet connection
+
+The app can be used privately without creating an online account.
 
 ---
 
 # 💾 Backup & Restore
 
-RemindMe can provide an offline backup system.
+RemindMe can provide a complete offline backup system.
 
 Example:
 
@@ -657,20 +719,115 @@ RemindMe-Backup.zip
     └── voice_002.m4a
 ```
 
-Backup options:
+Supported operations:
 
 - Export backup
 - Share backup
 - Import backup
 - Merge data
 - Restore data
-- Validate backup before restore
+- Validate backup
+- Restore attachments
+- Rebuild reminder schedules
 
 ---
 
-# 🏗️ Architecture
+# 🗑️ Recently Deleted
 
-RemindMe uses a feature-based Flutter architecture.
+Deleted notes are moved to a trash area instead of being immediately destroyed.
+
+```text
+Delete
+  ↓
+Recently Deleted
+  ├── Restore
+  └── Delete Permanently
+```
+
+This protects users from accidental deletion.
+
+---
+
+# 🔎 Offline Search
+
+Search across:
+
+- Projects
+- Note titles
+- Note content
+- Reminders
+- Tags
+
+Example:
+
+```text
+Search: Firebase
+
+Results
+├── CPApp
+│   ├── Firebase Setup
+│   └── Push Notifications
+└── Work
+    └── Firebase Reminder
+```
+
+Search works without an internet connection.
+
+---
+
+# ⚙️ Settings
+
+RemindMe includes a structured settings system.
+
+### Appearance
+
+- Light
+- Dark
+- System
+
+### Notifications
+
+- Default sound
+- Reminder preferences
+- Default snooze
+
+### Notes
+
+- Default project
+- Auto-save
+- Sort order
+
+### Storage
+
+- Database size
+- Image storage
+- Audio storage
+- Total usage
+- Cache management
+
+### Backup
+
+- Export
+- Import
+- Restore
+
+### Security
+
+- App Lock
+- Face ID / Touch ID
+- Device authentication
+
+### About
+
+- App version
+- Database version
+- Open-source licenses
+
+---
+
+# 🏗️ Flutter Architecture
+
+RemindMe uses a feature-based architecture designed for maintainability and scalability.
 
 ```text
 lib/
@@ -679,6 +836,9 @@ lib/
 │   ├── app.dart
 │   ├── router.dart
 │   └── theme/
+│       ├── app_theme.dart
+│       ├── colors.dart
+│       └── typography.dart
 │
 ├── core/
 │   ├── constants/
@@ -699,6 +859,7 @@ lib/
 │   ├── audio_service.dart
 │   ├── image_service.dart
 │   ├── attachment_service.dart
+│   ├── storage_service.dart
 │   ├── backup_service.dart
 │   └── search_service.dart
 │
@@ -727,13 +888,11 @@ Repository
 SQLite / Local File System
 ```
 
-Business logic is kept outside widgets to make the application easier to test and maintain.
+Business logic remains outside UI widgets for easier testing and maintenance.
 
 ---
 
 # 🗃️ Data Model
-
-Main entities:
 
 ```text
 Project
@@ -746,7 +905,7 @@ Project
    └── Reminders
 ```
 
-Core database tables:
+Core tables:
 
 - `projects`
 - `notes`
@@ -781,25 +940,43 @@ Core database tables:
 
 - Flutter SDK
 - Dart SDK
-- Xcode
-- CocoaPods
-- iOS Simulator or physical iPhone
+- Android Studio / Android SDK
+- Xcode for iOS development
+- CocoaPods for iOS dependencies
+- Android device/emulator or iPhone/iOS Simulator
 
-## Install
+## Clone
 
 ```bash
 git clone <YOUR_REPOSITORY_URL>
 cd remindme
+```
+
+## Install dependencies
+
+```bash
 flutter pub get
 ```
 
-## Run
+## Check Flutter setup
+
+```bash
+flutter doctor
+```
+
+## Run on Android
 
 ```bash
 flutter run
 ```
 
-For iOS:
+## Run on iOS
+
+```bash
+flutter run
+```
+
+For iOS dependency setup when required:
 
 ```bash
 cd ios
@@ -810,9 +987,19 @@ flutter run
 
 ---
 
-# 🔐 iOS Permissions
+# 🔐 Platform Permissions
 
 Depending on enabled features, RemindMe may request:
+
+### Android
+
+- Notifications
+- Microphone
+- Camera
+- Photos / media access
+- Device authentication
+
+### iOS
 
 - Notifications
 - Microphone
@@ -820,20 +1007,67 @@ Depending on enabled features, RemindMe may request:
 - Photo Library
 - Face ID / device authentication
 
-Permissions should be requested only when the related feature is used.
+Permissions should be requested contextually when a feature actually needs them.
+
+---
+
+# 🧪 Testing
+
+Recommended test areas:
+
+### Database
+
+- Create project
+- Update project
+- Delete project
+- Create note
+- Update note
+- Delete note
+- Create reminder
+- Complete reminder
+
+### Reminders
+
+- One-time
+- Daily
+- Weekly
+- Monthly
+- Custom recurrence
+- Snooze
+- Complete
+- Cancel
+- Notification actions
+
+### Attachments
+
+- Image capture
+- Gallery
+- Voice recording
+- Playback
+- Delete attachment
+
+### Backup
+
+- Export
+- Import
+- Invalid backup
+- Missing attachment
+- Duplicate data
 
 ---
 
 # 🛣️ Roadmap
 
-### Phase 1 — Foundation
-- [x] Project architecture
+## Phase 1 — Foundation
+
+- [ ] Flutter project architecture
 - [ ] Theme system
 - [ ] SQLite database
 - [ ] Riverpod state management
 - [ ] Routing
 
-### Phase 2 — Notes
+## Phase 2 — Notes
+
 - [ ] Text notes
 - [ ] Image notes
 - [ ] Voice notes
@@ -841,112 +1075,123 @@ Permissions should be requested only when the related feature is used.
 - [ ] Tags
 - [ ] Search
 
-### Phase 3 — Reminders
+## Phase 3 — Reminders
+
 - [ ] One-time reminders
 - [ ] Recurring reminders
 - [ ] Local notifications
 - [ ] Snooze
 - [ ] Notification actions
 
-### Phase 4 — Organization
+## Phase 4 — Organization
+
 - [ ] Projects
 - [ ] Favorites
 - [ ] Archive
 - [ ] Trash
 - [ ] Completed reminders
 
-### Phase 5 — Privacy & Backup
+## Phase 5 — Privacy & Backup
+
 - [ ] Offline backup
 - [ ] Restore
 - [ ] App lock
-- [ ] Face ID
+- [ ] Face ID / device authentication
 - [ ] Storage management
 
-### Phase 6 — Polish
+## Phase 6 — Polish
+
 - [ ] Glass UI
 - [ ] Dark mode
 - [ ] Animations
 - [ ] Haptics
 - [ ] Accessibility
 - [ ] Performance optimization
-
----
-
-# 🌙 Dark Mode
-
-RemindMe supports a dark visual system designed around deep surfaces, translucent cards and violet/pink accents.
-
-```text
-Light Mode
-☀️ Clean · Bright · Glass
-
-Dark Mode
-🌙 Deep · Soft · Premium
-```
+- [ ] Android polish
+- [ ] iOS polish
 
 ---
 
 # 📸 Screenshots
 
-Add screenshots here as the UI is implemented:
+Add application screenshots as the UI is completed.
+
+Recommended structure:
 
 ```text
 docs/
 ├── home.png
-├── project.png
+├── projects.png
+├── project-dashboard.png
 ├── note-editor.png
-├── reminder.png
+├── image-note.png
 ├── voice-note.png
+├── reminder.png
+├── search.png
 └── settings.png
 ```
 
-Example layout for GitHub:
+Suggested GitHub README presentation:
 
 | Home | Notes | Reminders |
 |---|---|---|
-| Add screenshot | Add screenshot | Add screenshot |
+| Screenshot | Screenshot | Screenshot |
 
 ---
 
-# 🧠 Product Philosophy
+# 📌 GitHub Repository Topics
 
-RemindMe is built around three principles:
-
-### 01 — Remember
-Capture anything quickly.
-
-### 02 — Organize
-Keep ideas inside projects and tags.
-
-### 03 — Act
-Turn important notes into reminders so they don't get forgotten.
+```text
+flutter
+dart
+android
+ios
+notes-app
+reminder-app
+productivity-app
+offline-first
+offline-app
+local-storage
+local-notifications
+voice-notes
+glassmorphism
+ios-design
+material-design
+sqlite
+riverpod
+drift
+```
 
 ---
 
 # 🤝 Contributing
 
-Contributions, ideas and improvements are welcome.
+Contributions and improvements are welcome.
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests where appropriate
-5. Open a pull request
+4. Add or update tests
+5. Verify Android and iOS behavior
+6. Open a pull request
 
 ---
 
-# 📄 License
+<!-- # 📄 License
 
 Add your preferred license here.
 
----
+--- -->
 
 <p align="center">
-  <strong>RemindMe</strong><br/>
+  <strong>🔔 RemindMe</strong><br/>
   Remember Everything. Never Miss What Matters.
+</p>
+
+<p align="center">
+  Android • iOS • Offline First • Flutter
 </p>
 
 <p align="center">
   Built with ❤️ and Flutter.
 </p>
-
