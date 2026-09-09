@@ -2,11 +2,12 @@
 
 Drop short notification sounds here.
 
-- **iOS**: a custom notification sound must ALSO be added to the Xcode project
-  (`Runner` target → Build Phases → Copy Bundle Resources) as a `.caf`/`.aiff`/`.wav`
-  file under 30 seconds. `NotificationService` looks it up as `<name>.caf`.
-- **Android**: place the file in `android/app/src/main/res/raw/<name>.<ext>`
-  (lowercase, no spaces). `NotificationService` resolves it as a `RawResourceAndroidNotificationSound`.
+- **iOS**: the bundled `.mp3` files are registered in the Runner target and
+  must remain under 30 seconds. `NotificationService` looks them up as
+  `<name>.mp3`.
+- **Android**: the bundled files are copied to
+  `android/app/src/main/res/raw/<name>.<ext>` (lowercase, underscores, no spaces).
+  `NotificationService` resolves them as a `RawResourceAndroidNotificationSound`.
 
-The value stored in `Reminder.sound` is the bare name (e.g. `chime`), or
-`default` to use the system sound.
+The value stored in `Reminder.sound` is the bare name (`funny` or
+`ticking_clock`), or `default` to use the system sound.

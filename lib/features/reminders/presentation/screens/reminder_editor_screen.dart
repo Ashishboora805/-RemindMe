@@ -29,7 +29,8 @@ class ReminderEditorScreen extends ConsumerStatefulWidget {
   final String? reminderId;
 
   @override
-  ConsumerState<ReminderEditorScreen> createState() => _ReminderEditorScreenState();
+  ConsumerState<ReminderEditorScreen> createState() =>
+      _ReminderEditorScreenState();
 }
 
 class _ReminderEditorScreenState extends ConsumerState<ReminderEditorScreen> {
@@ -37,6 +38,7 @@ class _ReminderEditorScreenState extends ConsumerState<ReminderEditorScreen> {
   final _descCtrl = TextEditingController();
   DateTime _date = _defaultDate();
   String _repeat = RepeatType.none;
+  String _sound = 'default';
   final Set<int> _weekdays = {};
   int _customInterval = 2;
   String _customUnit = 'day';
@@ -60,6 +62,12 @@ class _ReminderEditorScreenState extends ConsumerState<ReminderEditorScreen> {
     RepeatType.monthly,
     RepeatType.custom,
   ];
+
+  static const _soundOptions = {
+    'default': 'System default',
+    'funny': 'Funny',
+    'ticking_clock': 'Ticking clock',
+  };
 
   @override
   void initState() {
@@ -94,6 +102,9 @@ class _ReminderEditorScreenState extends ConsumerState<ReminderEditorScreen> {
       _descCtrl.text = reminder.description;
       _date = reminder.scheduledAt;
       _repeat = reminder.repeatType;
+      _sound = _soundOptions.containsKey(reminder.sound)
+          ? reminder.sound
+          : 'default';
       _weekdays
         ..clear()
         ..addAll(ref.read(reminderServiceProvider).weekdaysFor(reminder));
@@ -190,6 +201,7 @@ class _ReminderEditorScreenState extends ConsumerState<ReminderEditorScreen> {
           scheduledAt: _date,
           repeatType: _repeat,
           repeatConfig: config,
+          sound: _sound,
           clearRepeatConfig: config == null,
         );
       } else {
@@ -201,6 +213,7 @@ class _ReminderEditorScreenState extends ConsumerState<ReminderEditorScreen> {
           scheduledAt: _date,
           repeatType: _repeat,
           repeatConfig: config,
+          sound: _sound,
         );
       }
     } catch (e) {
@@ -238,13 +251,15 @@ class _ReminderEditorScreenState extends ConsumerState<ReminderEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = CupertinoTheme.of(context).brightness ?? Brightness.light;
+    final brightness =
+        CupertinoTheme.of(context).brightness ?? Brightness.light;
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: Text(_isEditing ? 'Edit Reminder' : 'New Reminder'),
       ),
       child: Container(
-        decoration: BoxDecoration(gradient: AppTheme.backgroundGradient(brightness)),
+        decoration:
+            BoxDecoration(gradient: AppTheme.backgroundGradient(brightness)),
         child: SafeArea(
           child: _loading
               ? const Center(child: CupertinoActivityIndicator())
@@ -310,8 +325,8 @@ class _ReminderEditorScreenState extends ConsumerState<ReminderEditorScreen> {
                     if (_repeat == RepeatType.weekly) ...[
                       const SizedBox(height: 14),
                       Text('On these days',
-                          style:
-                              TextStyle(color: AppColors.textSecondary(brightness))),
+                          style: TextStyle(
+                              color: AppColors.textSecondary(brightness))),
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
@@ -377,7 +392,8 @@ class _ReminderEditorScreenState extends ConsumerState<ReminderEditorScreen> {
                           Text('$_customInterval'),
                           CupertinoButton(
                             padding: EdgeInsets.zero,
-                            onPressed: () => setState(() => _customInterval += 1),
+                            onPressed: () =>
+                                setState(() => _customInterval += 1),
                             child: const Icon(CupertinoIcons.plus_circle),
                           ),
                           const SizedBox(width: 8),
@@ -386,9 +402,11 @@ class _ReminderEditorScreenState extends ConsumerState<ReminderEditorScreen> {
                               groupValue: _customUnit,
                               children: const {
                                 'day': Padding(
-                                    padding: EdgeInsets.all(6), child: Text('Days')),
+                                    padding: EdgeInsets.all(6),
+                                    child: Text('Days')),
                                 'week': Padding(
-                                    padding: EdgeInsets.all(6), child: Text('Weeks')),
+                                    padding: EdgeInsets.all(6),
+                                    child: Text('Weeks')),
                               },
                               onValueChanged: (v) =>
                                   setState(() => _customUnit = v ?? 'day'),
@@ -397,21 +415,63 @@ class _ReminderEditorScreenState extends ConsumerState<ReminderEditorScreen> {
                         ],
                       ),
                     ],
+                    const SizedBox(height: 16),
+                    Text('Notification sound',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary(brightness))),
+                    const SizedBox(height: 8),
+                    GlassCard(
+                      onTap: () => _pickSound(context),
+                      child: Row(
+                        children: [
+                          const Icon(CupertinoIcons.speaker_2),
+                          const SizedBox(width: 10),
+                          Expanded(child: Text(_soundOptions[_sound]!)),
+                          const Icon(CupertinoIcons.chevron_right, size: 18),
+                        ],
+                      ),
+                    ),
                     if (_error != null) ...[
                       const SizedBox(height: 12),
-                      Text(_error!, style: const TextStyle(color: AppColors.danger)),
+                      Text(_error!,
+                          style: const TextStyle(color: AppColors.danger)),
                     ],
                     const SizedBox(height: 28),
                     GlassButton(
                       label: _saving
                           ? 'Saving…'
                           : (_isEditing ? 'Save Changes' : 'Save Reminder'),
-                      onPressed:
-                          _saving || (_isEditing && _editing == null) ? null : _save,
+                      onPressed: _saving || (_isEditing && _editing == null)
+                          ? null
+                          : _save,
                       expand: true,
                     ),
                   ],
                 ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickSound(BuildContext context) async {
+    await showCupertinoModalPopup<void>(
+      context: context,
+      builder: (ctx) => CupertinoActionSheet(
+        title: const Text('Notification sound'),
+        actions: _soundOptions.entries
+            .map((entry) => CupertinoActionSheetAction(
+                  isDefaultAction: entry.key == _sound,
+                  onPressed: () {
+                    setState(() => _sound = entry.key);
+                    Navigator.pop(ctx);
+                  },
+                  child: Text(entry.value),
+                ))
+            .toList(),
+        cancelButton: CupertinoActionSheetAction(
+          onPressed: () => Navigator.pop(ctx),
+          child: const Text('Cancel'),
         ),
       ),
     );

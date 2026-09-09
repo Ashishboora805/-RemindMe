@@ -18,7 +18,9 @@ class NotificationActionIds {
 }
 
 const String _reminderCategoryId = 'reminder_category';
-const String _defaultChannelId = 'reminders';
+// Channel sound and vibration settings are immutable after Android creates a
+// channel. The v2 id makes existing installs pick up the corrected settings.
+const String _defaultChannelId = 'reminders_v2';
 const String _channelName = 'Reminders';
 const String _channelDescription = 'Scheduled reminders from Glass Notes';
 
@@ -34,17 +36,20 @@ class ReminderNotificationPayload {
   final String reminderId;
   final String? noteId;
   final String projectId;
+  final bool isAlarm;
 
   ReminderNotificationPayload({
     required this.reminderId,
     required this.projectId,
     this.noteId,
+    this.isAlarm = false,
   });
 
   String encode() => jsonEncode({
         'reminderId': reminderId,
         'noteId': noteId,
         'projectId': projectId,
+        'isAlarm': isAlarm,
       });
 
   static ReminderNotificationPayload? tryDecode(String? raw) {
@@ -55,6 +60,7 @@ class ReminderNotificationPayload {
         reminderId: map['reminderId'] as String,
         noteId: map['noteId'] as String?,
         projectId: map['projectId'] as String? ?? '',
+        isAlarm: map['isAlarm'] as bool? ?? false,
       );
     } catch (_) {
       return null;
@@ -172,7 +178,7 @@ class NotificationService {
     );
 
     if (Platform.isAndroid) {
-      await _ensureChannel('default');
+      await _ensureChannel('default', true);
     }
 
     _initialized = true;
@@ -269,7 +275,11 @@ class NotificationService {
       final granted = await android?.requestNotificationsPermission() ?? false;
       // Best-effort: the user can decline exact alarms and still get reminders,
       // just with OS-chosen slack around the fire time.
-      await android?.requestExactAlarmsPermission();
+      try {
+        await android?.requestExactAlarmsPermission();
+      } catch (_) {
+        // Some Android versions do not expose the exact-alarm settings page.
+      }
       return granted;
     }
 
@@ -279,9 +289,10 @@ class NotificationService {
   /// Creates (idempotently) the Android channel used for a given sound name.
   /// Android >= 8 takes the sound from the channel, not the notification, so a
   /// custom sound needs its own channel.
-  Future<String> _ensureChannel(String sound) async {
-    final channelId =
-        sound == 'default' ? _defaultChannelId : '${_defaultChannelId}_$sound';
+  Future<String> _ensureChannel(String sound, bool vibration) async {
+    final soundId = sound == 'default' ? 'default' : sound;
+    final vibrationId = vibration ? 'vibrate' : 'silent';
+    final channelId = '${_defaultChannelId}_${soundId}_$vibrationId';
     if (!Platform.isAndroid || _createdChannels.contains(channelId)) {
       return channelId;
     }
@@ -293,9 +304,11 @@ class NotificationService {
       description: _channelDescription,
       importance: Importance.max,
       playSound: true,
+        enableVibration: vibration,
       sound: sound == 'default'
           ? null
           : RawResourceAndroidNotificationSound(sound),
+        audioAttributesUsage: AudioAttributesUsage.alarm,
     ));
     _createdChannels.add(channelId);
     return channelId;
@@ -305,18 +318,18 @@ class NotificationService {
     required String sound,
     required bool vibration,
   }) async {
-    final channelId = await _ensureChannel(sound);
+    final channelId = await _ensureChannel(sound, vibration);
     return NotificationDetails(
       iOS: DarwinNotificationDetails(
         categoryIdentifier: _reminderCategoryId,
-        sound: sound == 'default' ? null : '$sound.caf',
+        sound: sound == 'default' ? null : '$sound.mp3',
         presentSound: true,
         presentAlert: true,
         presentBadge: true,
       ),
       macOS: DarwinNotificationDetails(
         categoryIdentifier: _reminderCategoryId,
-        sound: sound == 'default' ? null : '$sound.caf',
+        sound: sound == 'default' ? null : '$sound.mp3',
       ),
       android: AndroidNotificationDetails(
         channelId,
@@ -325,6 +338,8 @@ class NotificationService {
         importance: Importance.max,
         priority: Priority.high,
         enableVibration: vibration,
+        ongoing: true,
+        autoCancel: false,
         category: AndroidNotificationCategory.reminder,
         sound: sound == 'default'
             ? null
@@ -379,15 +394,12 @@ class NotificationService {
       return false;
     }
 
-    await _plugin.zonedSchedule(
-      notificationId,
-      title,
-      body.isEmpty ? null : body,
-      tzTime,
-      await _details(sound: sound, vibration: vibration),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
+    await _scheduleZoned(
+      notificationId: notificationId,
+      title: title,
+      body: body,
+      scheduledAt: tzTime,
+      details: await _details(sound: sound, vibration: vibration),
       payload: payload.encode(),
     );
     return true;
@@ -418,18 +430,123 @@ class NotificationService {
       tzTime = _advanceAnchor(tzTime, matchComponents);
     }
 
-    await _plugin.zonedSchedule(
-      notificationId,
-      title,
-      body.isEmpty ? null : body,
-      tzTime,
-      await _details(sound: sound, vibration: vibration),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
+    await _scheduleZoned(
+      notificationId: notificationId,
+      title: title,
+      body: body,
+      scheduledAt: tzTime,
+      details: await _details(sound: sound, vibration: vibration),
       payload: payload.encode(),
       matchDateTimeComponents: matchComponents,
     );
+  }
+
+  Future<String> _ensureAlarmChannel({required String sound}) async {
+    final channelId = 'reminder_alarms_v1_$sound';
+    if (!Platform.isAndroid) return channelId;
+    final android = _plugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+    await android?.createNotificationChannel(AndroidNotificationChannel(
+      channelId,
+      'Reminder alarms',
+      description: 'Full-screen alarms for scheduled reminders',
+      importance: Importance.max,
+      playSound: true,
+      enableVibration: true,
+      sound: sound == 'default'
+          ? null
+          : RawResourceAndroidNotificationSound(sound),
+      audioAttributesUsage: AudioAttributesUsage.alarm,
+    ));
+    return channelId;
+  }
+
+  Future<void> scheduleAlarm({
+    required int notificationId,
+    required String title,
+    required String body,
+    required DateTime scheduledAt,
+    required ReminderNotificationPayload payload,
+    String sound = 'default',
+  }) async {
+    if (!Platform.isAndroid) return;
+    await _plugin.cancel(notificationId);
+    final time = tz.TZDateTime.from(scheduledAt, tz.local);
+    if (!time.isAfter(tz.TZDateTime.now(tz.local))) return;
+    final channelId = await _ensureAlarmChannel(sound: sound);
+    final details = NotificationDetails(
+      android: AndroidNotificationDetails(
+        channelId,
+        'Reminder alarms',
+        channelDescription: 'Full-screen alarms for scheduled reminders',
+        importance: Importance.max,
+        priority: Priority.max,
+        playSound: true,
+        enableVibration: true,
+        fullScreenIntent: true,
+        ongoing: true,
+        autoCancel: false,
+        category: AndroidNotificationCategory.alarm,
+        sound: sound == 'default'
+            ? null
+            : RawResourceAndroidNotificationSound(sound),
+        actions: const [
+          AndroidNotificationAction(
+            NotificationActionIds.complete,
+            'Stop',
+            showsUserInterface: true,
+            cancelNotification: true,
+          ),
+          AndroidNotificationAction(
+            NotificationActionIds.snooze,
+            'Snooze 10 min',
+            showsUserInterface: true,
+            cancelNotification: true,
+          ),
+        ],
+      ),
+    );
+    await _scheduleZoned(
+      notificationId: notificationId,
+      title: title,
+      body: body,
+      scheduledAt: time,
+      details: details,
+      payload: payload.encode(),
+    );
+  }
+
+  Future<void> _scheduleZoned({
+    required int notificationId,
+    required String title,
+    required String body,
+    required tz.TZDateTime scheduledAt,
+    required NotificationDetails details,
+    required String payload,
+    DateTimeComponents? matchDateTimeComponents,
+  }) async {
+    Future<void> schedule(AndroidScheduleMode mode) => _plugin.zonedSchedule(
+          notificationId,
+          title,
+          body.isEmpty ? null : body,
+          scheduledAt,
+          details,
+          androidScheduleMode: mode,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+          payload: payload,
+          matchDateTimeComponents: matchDateTimeComponents,
+        );
+
+    try {
+      await schedule(AndroidScheduleMode.exactAllowWhileIdle);
+    } catch (error) {
+      // Android can deny exact alarms even when notifications are enabled.
+      // Inexact delivery is still useful and, importantly, keeps saving a
+      // reminder from terminating the app on that device.
+      if (!Platform.isAndroid) rethrow;
+      await schedule(AndroidScheduleMode.inexactAllowWhileIdle);
+    }
   }
 
   tz.TZDateTime _advanceAnchor(

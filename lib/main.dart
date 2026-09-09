@@ -21,6 +21,9 @@ Future<void> main() async {
   await _guard(() => NotificationService.instance.init(
         onAction: (actionId, payload) async {
           final reminderService = container.read(reminderServiceProvider);
+          if (payload.isAlarm) {
+            await reminderService.cancelAlarm(payload.reminderId);
+          }
           switch (actionId) {
             case NotificationActionIds.complete:
               await reminderService.complete(payload.reminderId);
@@ -35,8 +38,10 @@ Future<void> main() async {
             default:
               // Deep-link handling: the root widget listens for this and
               // navigates once the router is ready — see app.dart.
-              container.read(pendingDeepLinkProvider.notifier).state =
-                  payload.noteId != null && payload.noteId!.isNotEmpty
+                container.read(pendingDeepLinkProvider.notifier).state =
+                  payload.isAlarm
+                    ? '/alarm/${payload.reminderId}'
+                    : payload.noteId != null && payload.noteId!.isNotEmpty
                       ? '/note/${payload.noteId}'
                       : '/reminder/${payload.reminderId}';
               break;

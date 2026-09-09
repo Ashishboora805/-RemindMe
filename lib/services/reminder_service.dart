@@ -24,6 +24,9 @@ class ReminderService {
   /// second OS notification (idempotency requirement).
   int notificationIdFor(String reminderId) => reminderId.hashCode & 0x7FFFFFFF;
 
+  int alarmNotificationIdFor(String reminderId) =>
+      notificationIdFor(reminderId) + 1000000000;
+
   Future<bool> ensurePermission() =>
       NotificationService.instance.requestPermission();
 
@@ -117,6 +120,7 @@ class ReminderService {
   Future<void> _scheduleOs(Reminder input) async {
     if (!input.isActive || input.isCompleted) {
       await NotificationService.instance.cancel(input.notificationId);
+      await cancelAlarm(input.id);
       return;
     }
 
@@ -151,6 +155,7 @@ class ReminderService {
           sound: r.sound,
           vibration: r.vibration,
         );
+        await _scheduleAlarm(r);
         return;
 
       case RepeatType.weekly:
@@ -168,6 +173,7 @@ class ReminderService {
             sound: r.sound,
             vibration: r.vibration,
           );
+          await _scheduleAlarm(r);
           return;
         }
         break;
@@ -183,6 +189,7 @@ class ReminderService {
           sound: r.sound,
           vibration: r.vibration,
         );
+        await _scheduleAlarm(r);
         return;
     }
 
@@ -199,6 +206,27 @@ class ReminderService {
       sound: r.sound,
       vibration: r.vibration,
     );
+    await _scheduleAlarm(r);
+  }
+
+  Future<void> _scheduleAlarm(Reminder r) {
+    return NotificationService.instance.scheduleAlarm(
+      notificationId: alarmNotificationIdFor(r.id),
+      title: r.title,
+      body: r.description,
+      scheduledAt: r.scheduledAt,
+      payload: ReminderNotificationPayload(
+        reminderId: r.id,
+        noteId: r.noteId,
+        projectId: r.projectId,
+        isAlarm: true,
+      ),
+      sound: r.sound,
+    );
+  }
+
+  Future<void> cancelAlarm(String reminderId) async {
+    await NotificationService.instance.cancel(alarmNotificationIdFor(reminderId));
   }
 
   Map<String, dynamic>? _decodeConfig(String? raw) {
@@ -315,6 +343,7 @@ class ReminderService {
   Future<void> snooze(String reminderId, Duration by) async {
     final r = await _db.remindersDao.getById(reminderId);
     if (r == null) return;
+    await cancelAlarm(reminderId);
     await NotificationService.instance.cancel(r.notificationId);
 
     final newTime = DateTime.now().add(by);
@@ -340,6 +369,7 @@ class ReminderService {
   Future<void> complete(String reminderId) async {
     final r = await _db.remindersDao.getById(reminderId);
     if (r == null) return;
+    await cancelAlarm(reminderId);
     await NotificationService.instance.cancel(r.notificationId);
     if (r.repeatType == RepeatType.none) {
       await _db.remindersDao.markCompleted(reminderId, true);
@@ -359,6 +389,7 @@ class ReminderService {
   Future<void> cancelReminder(String reminderId) async {
     final r = await _db.remindersDao.getById(reminderId);
     if (r == null) return;
+    await cancelAlarm(reminderId);
     await NotificationService.instance.cancel(r.notificationId);
     await _db.remindersDao.setActive(reminderId, false);
   }
@@ -367,6 +398,7 @@ class ReminderService {
   Future<void> deleteReminder(String reminderId) async {
     final r = await _db.remindersDao.getById(reminderId);
     if (r == null) return;
+    await cancelAlarm(reminderId);
     await NotificationService.instance.cancel(r.notificationId);
     await _db.remindersDao.deleteReminder(reminderId);
   }

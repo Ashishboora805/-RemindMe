@@ -9,6 +9,7 @@ import '../features/notes/presentation/screens/note_detail_screen.dart';
 import '../features/notes/presentation/screens/voice_note_recorder_screen.dart';
 import '../features/reminders/presentation/screens/reminder_editor_screen.dart';
 import '../features/reminders/presentation/screens/reminder_detail_screen.dart';
+import '../features/reminders/presentation/screens/alarm_screen.dart';
 import '../features/search/presentation/search_screen.dart';
 import '../features/trash/presentation/trash_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
@@ -83,6 +84,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/reminder/:id',
         builder: (context, state) =>
             ReminderDetailScreen(reminderId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/alarm/:id',
+        builder: (context, state) =>
+        AlarmScreen(reminderId: state.pathParameters['id']!),
       ),
       GoRoute(path: '/search', builder: (context, state) => const SearchScreen()),
       GoRoute(path: '/trash', builder: (context, state) => const TrashScreen()),
